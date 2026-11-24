@@ -189,3 +189,24 @@ def test_multiple_formats_771(tmpdir, cwd_tmpdir, python_notebook):
 
     assert notebooks_dir.join("module.ipynb").isfile()
     assert scripts_dir.join("module.py").isfile()
+
+
+@pytest.mark.requires_black
+def test_pipe_uses_jupytext_config_996(tmp_path):
+    tmp_path.joinpath("jupytext.toml").write_text("root_level_metadata_as_raw_cell = false\n")
+    text = """---
+title: My title
+---
+
+# A heading
+
+```python
+1 + 1
+```
+"""
+    tmp_md = tmp_path / "notebook.md"
+    tmp_md.write_text(text)
+
+    jupytext(["--pipe", "black", str(tmp_md)])
+
+    assert tmp_md.read_text() == text

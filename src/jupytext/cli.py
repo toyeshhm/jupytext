@@ -725,6 +725,7 @@ def jupytext_single_file(nb_file, args, log, notary):
             prefix=prefix,
             directory=directory,
             warn_only=args.warn_only,
+            config=config,
         )
 
     # and/or test the desired commands onto the notebook
@@ -738,6 +739,7 @@ def jupytext_single_file(nb_file, args, log, notary):
             prefix=prefix,
             directory=directory,
             warn_only=args.warn_only,
+            config=config,
         )
 
     if (
@@ -1336,6 +1338,7 @@ def pipe_notebook(
     prefix=None,
     directory=None,
     warn_only=False,
+    config=None,
 ):
     """Pipe the notebook, in the desired representation, to the given command. Update the notebook
     with the returned content if desired."""
@@ -1346,7 +1349,7 @@ def pipe_notebook(
 
     fmt = long_form_one_format(fmt, notebook.metadata, auto_ext_requires_language_info=False)
     fmt = check_auto_ext(fmt, notebook.metadata, "--pipe-fmt")
-    text = writes(notebook, fmt)
+    text = writes(notebook, fmt, config=config)
 
     command = shlex.split(command)
     if "{}" in command:
@@ -1380,7 +1383,7 @@ def pipe_notebook(
             if not update:
                 return notebook
 
-            piped_notebook = read(tmp.name, fmt=fmt)
+            piped_notebook = read(tmp.name, fmt=fmt, config=config)
         finally:
             os.remove(tmp.name)
     else:
@@ -1401,7 +1404,7 @@ def pipe_notebook(
                 "Is this expected? If not, use --check rather than --pipe for this command.".format(command)
             )
 
-        piped_notebook = reads(cmd_output.decode("utf-8"), fmt)
+        piped_notebook = reads(cmd_output.decode("utf-8"), fmt, config=config)
 
     if fmt["extension"] != ".ipynb":
         piped_notebook = combine_inputs_with_outputs(piped_notebook, notebook, fmt)

@@ -1,0 +1,1 @@
+- `jupytext --pipe` and `--check` now apply the Jupytext configuration file when they write and read the notebook, so options like `root_level_metadata_as_raw_cell` are respected ([#996](https://github.com/jupytext/jupytext/issues/996)). Thanks to [JMMarchant](https://github.com/JMMarchant) for reporting the issue.
